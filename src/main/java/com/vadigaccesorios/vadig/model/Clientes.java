@@ -11,9 +11,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name =  "clientes")
+@Table(name = "clientes")
 public class Clientes {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String Nombre;
@@ -29,9 +29,7 @@ public class Clientes {
     @OneToMany(mappedBy = "usuario")
     private List<carrito> ordenes;
 
-
-
-    public Clientes() {    
+    public Clientes() {
     }
 
     public Clientes(Integer id, String nombre, String username, String email, String direccion, String telefono,
@@ -45,32 +43,78 @@ public class Clientes {
         this.tipo = tipo;
         this.password = password;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
     public void setNombre(String nombre) {
         Nombre = nombre;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
+    public String getTipo() {
+        return tipo;
+    }
+
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    
+    public List<carrito> getOrdenes() {
+        return ordenes;
+    }
+
+    public void setOrdenes(List<carrito> ordenes) {
+        this.ordenes = ordenes;
+    }
 
     public List<Producto> getProductos() {
         return productos;
@@ -87,5 +131,5 @@ public class Clientes {
                 + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
                 + "]";
     }
-    
+
 }
