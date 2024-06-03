@@ -97,6 +97,11 @@ public class DetallePedido {
         return "DetalleOrden [id=" + id + ", nombre=" + nombre + ", cantidad=" + cantidad + ", precio=" + precio
                 + ", total=" + total + "]";
     }
+
+    public void setPrecio(String precio2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPrecio'");
+    }
     
 
 
