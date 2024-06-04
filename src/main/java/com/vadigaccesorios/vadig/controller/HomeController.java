@@ -18,6 +18,9 @@ import com.vadigaccesorios.vadig.model.DetallePedido;
 import com.vadigaccesorios.vadig.model.Producto;
 import com.vadigaccesorios.vadig.model.carrito;
 import com.vadigaccesorios.vadig.service.ProductoService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.ui.Model;
 
 @Controller
@@ -112,5 +115,16 @@ public class HomeController<Orden> {
 		model.addAttribute("orden", orden);
 
 		return "usuario/carrito";
+	}
+
+    @GetMapping("/getCart")
+	public String getCart(Model model, HttpSession session) {
+		
+		model.addAttribute("cart", detalles);
+		model.addAttribute("orden", orden);
+		
+		//sesion
+		model.addAttribute("sesion", session.getAttribute("idusuario"));
+		return "/usuario/carrito";
 	}
 }
