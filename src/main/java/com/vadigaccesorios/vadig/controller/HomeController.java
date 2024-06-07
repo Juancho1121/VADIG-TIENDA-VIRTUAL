@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.vadigaccesorios.vadig.model.Clientes;
 import com.vadigaccesorios.vadig.model.DetallePedido;
 import com.vadigaccesorios.vadig.model.Producto;
 import com.vadigaccesorios.vadig.model.carrito;
+import com.vadigaccesorios.vadig.service.IUsuarioService;
 import com.vadigaccesorios.vadig.service.ProductoService;
 
 import jakarta.servlet.http.HttpSession;
@@ -27,38 +29,40 @@ import org.springframework.ui.Model;
 @RequestMapping("/")
 public class HomeController<Orden> {
 
-    private final Logger log = LoggerFactory.getLogger(HomeController.class);
+	private final Logger log = LoggerFactory.getLogger(HomeController.class);
 
-    @Autowired
-    private ProductoService productoService;
+	@Autowired
+	private ProductoService productoService;
+	@Autowired
+	private IUsuarioService usuarioService;
 
+	List<DetallePedido> detalles = new ArrayList<DetallePedido>();
 
-    List<DetallePedido> detalles = new ArrayList<DetallePedido>();
-
-    
 	// datos de la orden
 	carrito orden = new carrito();
 
-    @GetMapping("")
-    public String home(Model model) {
+	Clientes usuario;
 
-        model.addAttribute("productos", productoService.findAll());
-        return "usuario/home";
-    }
+	@GetMapping("")
+	public String home(Model model) {
 
-    @GetMapping("productohome/{id}")
-    public String productoHome(@PathVariable Integer id, Model model) {
-        log.info("Id producto enviado como parámetro {}", id);
-        Producto producto = new Producto();
-        Optional<Producto> productoOptional = productoService.get(id);
-        producto = productoOptional.get();
+		model.addAttribute("productos", productoService.findAll());
+		return "usuario/home";
+	}
 
-        model.addAttribute("producto", producto);
+	@GetMapping("productohome/{id}")
+	public String productoHome(@PathVariable Integer id, Model model) {
+		log.info("Id producto enviado como parámetro {}", id);
+		Producto producto = new Producto();
+		Optional<Producto> productoOptional = productoService.get(id);
+		producto = productoOptional.get();
 
-        return "usuario/productohome";
-    }
+		model.addAttribute("producto", producto);
 
-    @PostMapping("/cart")
+		return "usuario/productohome";
+	}
+
+	@PostMapping("/cart")
 	public String addCart(@RequestParam Integer id, @RequestParam Integer cantidad, Model model) {
 		DetallePedido detalleOrden = new DetallePedido();
 		Producto producto = new Producto();
@@ -72,17 +76,17 @@ public class HomeController<Orden> {
 		detalleOrden.setCantidad(cantidad);
 		detalleOrden.setPrecio(producto.getPrecio());
 		detalleOrden.setNombre(producto.getNombre());
-		detalleOrden.setTotal(producto.getPrecio()*cantidad);
+		detalleOrden.setTotal(producto.getPrecio() * cantidad);
 		detalleOrden.setProducto(producto);
-		
-		//validar que le producto no se añada 2 veces
-		Integer idProducto=producto.getId();
-		boolean ingresado=detalles.stream().anyMatch(p -> p.getProducto().getId()==idProducto);
-		
+
+		// validar que le producto no se añada 2 veces
+		Integer idProducto = producto.getId();
+		boolean ingresado = detalles.stream().anyMatch(p -> p.getProducto().getId() == idProducto);
+
 		if (!ingresado) {
 			detalles.add(detalleOrden);
 		}
-		
+
 		sumaTotal = detalles.stream().mapToDouble(dt -> dt.getTotal()).sum();
 
 		orden.setTotal(sumaTotal);
@@ -91,7 +95,8 @@ public class HomeController<Orden> {
 
 		return "usuario/carrito";
 	}
-    // quitar un producto del carrito
+
+	// quitar un producto del carrito
 	@GetMapping("/delete/cart/{id}")
 	public String deleteProductoCart(@PathVariable Integer id, Model model) {
 
@@ -117,14 +122,27 @@ public class HomeController<Orden> {
 		return "usuario/carrito";
 	}
 
-    @GetMapping("/getCart")
+	@GetMapping("/getCart")
 	public String getCart(Model model, HttpSession session) {
-		
+
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
-		
-		//sesion
+
+		// sesion
 		model.addAttribute("sesion", session.getAttribute("idusuario"));
 		return "/usuario/carrito";
 	}
+
+	@GetMapping("/order")
+	public String order(Model model, HttpSession session) {
+
+		Clientes usuario =usuarioService.findById(1).get();
+
+		model.addAttribute("cart", detalles);
+		model.addAttribute("orden", orden);
+		model.addAttribute("usuario", usuario);
+
+		return "usuario/resumenorden";
+	}
+
 }

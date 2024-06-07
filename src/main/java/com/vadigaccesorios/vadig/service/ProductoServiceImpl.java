@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vadigaccesorios.vadig.model.Producto;
-import com.vadigaccesorios.vadig.repository.ProductoRepository;
+import com.vadigaccesorios.vadig.repository.IProductoRepository;
 
 @Service
-public class ProductoServiceImpl implements ProductoService{
+public class ProductoServiceImpl implements ProductoService {
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private IProductoRepository productoRepository;
 
     @Override
     public Producto save(Producto producto) {
@@ -27,12 +27,13 @@ public class ProductoServiceImpl implements ProductoService{
 
     @Override
     public void update(Producto producto) {
-       productoRepository.save(producto);
+        productoRepository.save(producto);
     }
 
     @Override
     public void delete(Integer id) {
-        productoRepository.deleteById(id);;
+        productoRepository.deleteById(id);
+        ;
     }
 
     @Override

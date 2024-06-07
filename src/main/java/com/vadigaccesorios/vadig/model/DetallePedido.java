@@ -23,7 +23,7 @@ public class DetallePedido {
     @OneToOne
     private Producto producto;
 
-    public DetallePedido(){
+    public DetallePedido() {
 
     }
 
@@ -75,7 +75,6 @@ public class DetallePedido {
         this.total = total;
     }
 
-    
     public carrito getCarrito() {
         return carrito;
     }
@@ -99,11 +98,8 @@ public class DetallePedido {
     }
 
     public void setPrecio(String precio2) {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'setPrecio'");
     }
-    
-
-
 
 }
