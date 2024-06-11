@@ -1,13 +1,17 @@
 package com.vadigaccesorios.vadig.controller;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +22,12 @@ import com.vadigaccesorios.vadig.model.Clientes;
 import com.vadigaccesorios.vadig.model.DetallePedido;
 import com.vadigaccesorios.vadig.model.Producto;
 import com.vadigaccesorios.vadig.model.carrito;
+import com.vadigaccesorios.vadig.service.IDetalleOrdenService;
+import com.vadigaccesorios.vadig.service.IOrdenService;
 import com.vadigaccesorios.vadig.service.IUsuarioService;
 import com.vadigaccesorios.vadig.service.ProductoService;
 
 import jakarta.servlet.http.HttpSession;
-
-import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/")
@@ -35,6 +39,10 @@ public class HomeController<Orden> {
 	private ProductoService productoService;
 	@Autowired
 	private IUsuarioService usuarioService;
+	@Autowired
+	private IOrdenService ordenService;
+	@Autowired
+	private IDetalleOrdenService detalleOrdenService;
 
 	List<DetallePedido> detalles = new ArrayList<DetallePedido>();
 
@@ -136,7 +144,7 @@ public class HomeController<Orden> {
 	@GetMapping("/order")
 	public String order(Model model, HttpSession session) {
 
-		Clientes usuario =usuarioService.findById(1).get();
+		Clientes usuario = usuarioService.findById(1).get();
 
 		model.addAttribute("cart", detalles);
 		model.addAttribute("orden", orden);
@@ -145,4 +153,40 @@ public class HomeController<Orden> {
 		return "usuario/resumenorden";
 	}
 
+	@GetMapping("/saveOrder")
+	public String saveOrder() {
+		Date fechaCreacion = new Date();
+		orden.setFechaCreacion(fechaCreacion);
+		orden.setNumero(ordenService.generarNumeroOrden());
+
+		// Usuario
+
+		Clientes usuario = usuarioService.findById(1).get();
+
+		orden.setUsuario(usuario);
+		ordenService.save(orden);
+
+		// Guardar detalles
+
+		for (DetallePedido dt : detalles) {
+			dt.setCarrito(orden);
+			detalleOrdenService.save(dt);
+		}
+
+		/// Limpiar orden
+		orden = new carrito();
+		detalles.clear();
+
+		return ("redirect:/");
+
+	}
+
+	@PostMapping("/search")
+	public String searchProduct(@RequestParam String nombre, Model model) {
+		log.info("nombre del producto: {}", nombre);
+		List<Producto> productos = productoService.findAll().stream().filter(p -> p.getNombre().contains(nombre))
+				.collect(Collectors.toList());
+		model.addAttribute("productos", productos);
+		return "usuario/home";
+	}
 }

@@ -8,9 +8,9 @@ import com.vadigaccesorios.vadig.model.Clientes;
 import com.vadigaccesorios.vadig.model.carrito;
 
 
-
-
 @Repository
 public interface IOrdenRepository extends JpaRepository<carrito, Integer> {
-	List<carrito> findByClientes (Clientes usuario);
+	List<carrito> findByUsuario(Clientes usuario);
+
+
 }

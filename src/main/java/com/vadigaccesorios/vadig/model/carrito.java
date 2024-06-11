@@ -1,6 +1,6 @@
 package com.vadigaccesorios.vadig.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,12 +50,15 @@ public class carrito {
     public void setNumero(String numero) {
         this.numero = numero;
     }
+  
     public Date getFechaCreacion() {
         return fechaCreacion;
     }
-    public void setFechaCreacion(Date fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
+    public void setFechaCreacion(java.util.Date fechaCreacion) {
+        this.fechaCreacion = (Date) fechaCreacion;
     }
+    
+
     public Date getFechaRecibida() {
         return fechaRecibida;
     }
